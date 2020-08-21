@@ -2,3 +2,4 @@
 # Example packages listed below. Uncomment to use or add your own!
 # RPi.GPIO
 # pygame
+Pillow
