@@ -17,10 +17,10 @@ To install app dependencies in the runtime container, list them in the requireme
 
 def arr_to_img(run_id,frame,frame_num):
     img = Image.fromarray(frame, 'RGB')
-    img.save('raw_images/run_{}_frm_{}.png'.format(run_id,frame_num))
+    img.save('runs/run_{}/images/frm_{}.png'.format(run_id,frame_num))
 
 def main():
-    run_id = 1
+    run_id = 3
     pose_estimator = edgeiq.PoseEstimation("alwaysai/human-pose")
     pose_estimator.load(
             engine=edgeiq.Engine.DNN)
@@ -61,6 +61,7 @@ def main():
                         text.append("Key Points:")
                     
                         print ("i={}, j={}\n".format(i,j))
+                        print (pose.score)
                         print (pose.key_points)
 
                     for key_point in pose.key_points:
@@ -69,13 +70,12 @@ def main():
 
                     #write the image to disk 
                     arr_to_img(run_id,frame, j)
-
-                    fps.update()
                     j+=1
 
                 i+=1
 
-                                
+                fps.update()
+                
                 if j >=5: #streamer.check_exit():
                     break
     finally:
