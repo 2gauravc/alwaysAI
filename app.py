@@ -3,6 +3,7 @@ import time
 import edgeiq
 import numpy as np
 from PIL import Image
+import math
 
 """
 Use pose estimation to determine human poses in realtime. Human Pose returns
@@ -19,8 +20,38 @@ def arr_to_img(run_id,frame,frame_num):
     img = Image.fromarray(frame, 'RGB')
     img.save('runs/run_{}/images/frm_{}.png'.format(run_id,frame_num))
 
+def calc_dist(p1,p2):
+
+    dist = math.sqrt(pow((p1.x-p2.x),2) + pow ((p1.y-p2.y),2))
+    return (dist)
+
+def sanity_check_key_points(key_points):
+    #1. Arm lengths are equal
+    r_arm_length = calc_dist(key_points['Right Shoulder'], key_points['Right Elbow']) + \
+                   calc_dist(key_points['Right Elbow'], key_points['Right Wrist'])
+
+    l_arm_length = calc_dist(key_points['Left Shoulder'], key_points['Left Elbow']) + \
+                   calc_dist(key_points['Left Elbow'], key_points['Left Wrist'])
+
+    print("Left Arm: {}".format(l_arm_length))
+    print("Right Arm: {}".format(r_arm_length))
+    
+    #2. Leg lengths are equal
+    r_leg_length = calc_dist(key_points['Right Hip'], key_points['Right Knee']) + \
+                   calc_dist(key_points['Right Knee'], key_points['Right Ankle'])
+
+    l_leg_length = calc_dist(key_points['Left Hip'], key_points['Left Knee']) + \
+                   calc_dist(key_points['Left Knee'], key_points['Left Ankle'])
+
+    l_dict = {'r_arm_length': r_arm_length, 'l_arm_length': l_arm_length, \
+              'r_leg_length': r_leg_length, 'l_leg_length':l_leg_length}
+    print(l_dict)
+
+    return (l_dict)
+    
+
 def main():
-    run_id = 3
+    run_id = 4
     pose_estimator = edgeiq.PoseEstimation("alwaysai/human-pose")
     pose_estimator.load(
             engine=edgeiq.Engine.DNN)
@@ -44,9 +75,9 @@ def main():
                 
                 frame = video_stream.read()
 
-                #Take every 5th frame. Take first 5 instances
+                #Take every 25th frame. Take first 10 instances
 
-                if i % 5 ==0:
+                if i % 25 ==0:
                     results = pose_estimator.estimate(frame)
                     # Generate text to display on streamer
                     text = ["Model: {}".format(pose_estimator.model_id)]
@@ -58,14 +89,16 @@ def main():
                         text.append("Pose Score")
                         text.append(str(pose.score))
                         text.append('-'*10)
-                        text.append("Key Points:")
-                    
+                        l_dict=sanity_check_key_points(pose.key_points)
+
+                        text.append("Left Arm Length: {}".format(l_dict['l_arm_length']))
+                        text.append("Right Arm Length: {}".format(l_dict['r_arm_length']))
+                        text.append("Left Leg Length: {}".format(l_dict['l_leg_length']))
+                        text.append("Right Arm Length: {}".format(l_dict['r_leg_length']))
+
                         print ("i={}, j={}\n".format(i,j))
                         print (pose.score)
-                        print (pose.key_points)
-
-                    for key_point in pose.key_points:
-                        text.append(str(key_point))
+    
                     streamer.send_data(results.draw_poses(frame), text)
 
                     #write the image to disk 
@@ -76,7 +109,7 @@ def main():
 
                 fps.update()
                 
-                if j >=5: #streamer.check_exit():
+                if j >=10: #streamer.check_exit():
                     break
     finally:
         fps.stop()
