@@ -31,9 +31,9 @@ You need to install the alwaysAI software.
 Follow the instructions on [this](https://www.alwaysai.co/docs/getting_started/development_computer_setup.html) page to install and configure the software.  
 
 
-### 1. Working with projects 
+### 2. Working with projects 
 
-You need to set-up a project on alwaysAI website and set it up on your laptop / desktop. 
+You need to set-up a project on alwaysAI website and on your laptop / desktop. 
 
 Follow the instructions on [this](https://www.alwaysai.co/docs/getting_started/working_with_projects.html) page. 
 - Choose "Human Pose Estimation"" model 
@@ -49,9 +49,5 @@ Use your login and password for the alwaysAI website when prompted.
 
 When the app runs, it starts a service on port 5000. Go to port 5000 on your browser. 
 
-With your webcam input, you will see the body keypoints identified and joined by blue lines. 
-
-
-
-- 
+With your webcam input, you will see the body keypoints identified and joined by colored lines. 
 
