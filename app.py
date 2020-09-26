@@ -29,9 +29,10 @@ def main():
     
     #Open the input file 
     myvideo = 'input/vjump-s1a.mov'
+    outputfile = 'output/vjump-s1a.mov'
 
     try:
-        with edgeiq.FileVideoStream(myvideo) as video_stream:
+        with edgeiq.FileVideoStream(myvideo) as video_stream, edgeiq.VideoWriter(outputfile) as video_writer:
             fps.start()
             # loop detection
             while True:
@@ -41,6 +42,12 @@ def main():
                 # Speed Test
                 print("\t Processing Frame# ", frame_num)
                 
+                # Draw the poses 
+                img_with_poses = results.draw_poses(frame) 
+
+                # write to out video file 
+                video_writer.write_frame(img_with_poses)
+
                 frame_num+=1
                 fps.update()
 
@@ -48,6 +55,7 @@ def main():
         print("\tFinished processing {} frames".format(frame_num))
 
     finally:
+        video_writer.close()
         fps.stop()
         print("\t Elapsed time: {:.2f}".format(fps.get_elapsed_seconds()))
         print("\t Approx. FPS: {:.2f}".format(fps.compute_fps()))
