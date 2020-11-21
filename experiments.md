@@ -20,8 +20,9 @@ For each experiment, the github repo will capture the variable elements in an al
 |4|Train a model on alwaysAI                      | TBD                 |             |
 |5|Speed test - alwaysAI model against Cafee      | TBD                 |             |
 |6|Speed test alwaysAI model aginst Caffe as custom model   | TBD       |             |
-|7|Extract key pose points in a flat structure by video frame or image  | TBD         |             
-|8|Write the key pose points onto a database on ESQL  | TBD             |             |              
+|7|Extract key pose points in a flat structure by video frame or image  | Done        |            
+|8|Write the key pose points onto a database on ESQL  | TBD             |             |            
+|9|Import a pickle model into alwaysAI directory and use within app.py | TBD | |             
 
 
 
